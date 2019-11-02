@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+   <head>
+      <meta charset="UTF-8">
+      <title>Product List</title>
+      <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+   </head>
+   <body>
+      <th:block th:include="/_header"></th:block>
+      <th:block th:include="/_menu"></th:block>
+       
+      <div class="page-title">Thông tin đơn hàng</div>
+      
+	  <th:block sec:authorize="hasRole('ROLE_MANAGER')">
+         <div class="customer-info-container">
+         <h3>Thông tin khách hàng:</h3>
+         <ul>
+            <li>Tên người nhận: <span th:utext="${orderInfo.customerName}"></span></li>
+            <li>Email người nhận: <span th:utext="${orderInfo.customerEmail}"></span></li>
+            <li>Số điện thoại người nhận: <span th:utext="${orderInfo.customerPhone}"></span></li>
+            <li>Địa chỉ người nhận: <span th:utext="${orderInfo.customerAddress}"></span></li>
+         </ul>
+         <h3>Tổng giá trị:</h3>
+         <ul>
+            <li>Tổng:
+               <span class="total" th:utext="${#numbers.formatDecimal(orderInfo.amount,3,2,'COMMA')}">         
+               </span>
+            </li>
+         </ul>
+      </div>
+      </th:block>
+      
+      
+      
+      <br/>
+      <table border="1" style="width:100%">
+         <tr>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Số tiền</th>
+         </tr>
+         <tr th:each="orderDetailInfo : ${orderInfo.details}">
+            <td th:utext="${orderDetailInfo.productCode}"></td>
+            <td th:utext="${orderDetailInfo.productName}"></td>
+            <td th:utext="${orderDetailInfo.quanity}"></td>
+            <td th:utext="${#numbers.formatDecimal(orderDetailInfo.price,3,2,'COMMA')}"></td>
+            <td th:utext="${#numbers.formatDecimal(orderDetailInfo.amount,3,2,'COMMA')}"></td>
+         </tr>
+      </table>
+       
+      <th:block th:include="/_footer"></th:block>
+       
+   </body>
+</html>

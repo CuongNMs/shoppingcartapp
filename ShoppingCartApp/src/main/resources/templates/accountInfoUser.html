@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <meta charset="UTF-8">
+      <title>Thông tin tài khoản</title>
+      <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+   </head>
+   <body>
+    
+      <th:block th:include="/_header"></th:block>
+      <th:block th:include="/_menu"></th:block>
+       
+      <div class="page-title">Thông tin tài khoản</div>
+      <div class="account-container">
+         <ul>
+            <li>Họ tên: <span th:utext="${userInformation.fullName}"></span></li>
+            <li>Email: <span th:utext="${userInformation.email}"></span></li>
+            <li>Địa chỉ: <span th:utext="${userInformation.address}"></span></li>
+         </ul>
+      </div>
+      <th:block th:include="/_footer"></th:block>
+       
+   </body>
+</html>
