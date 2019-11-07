@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+   <head>
+      <meta charset="UTF-8">
+      <title>Product Info</title>
+      <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   </head>
+   <body>
+      <th:block th:include="/_header"></th:block>
+      <th:block th:include="/_menu"></th:block>
+			<div class="content">
+				<div class="topnav">
+	  			<div class="search-container">
+	    		<form action="#" th:action="@{/search}" method="get">
+	      			<input type="text" placeholder="Search.." name="keyword" th:value="${keyword}">
+	      			<button type="submit"><i class="fa fa-search"></i></button>
+	    		</form>
+	  			</div>
+			</div>
+		        <div class="content" th:object="${productForm}">
+         <table style="text-align:left;">
+            <tr>
+               <td>Tên sản phẩm</td>
+               <td th:utext="${productForm.name}"></td>
+  
+            </tr>
+            <tr>
+               <td>Giá tiền</td>
+               <td th:utext="${productForm.price}"></td>
+            </tr>
+            <tr>
+               <td>Chi tiết</td>
+               <td th:utext="${productForm.detail}"></td>
+            </tr>
+            <tr>
+               <td>Hình ảnh</td>
+               <td>
+                  <img th:src="@{|/productImage?code=${productForm.code}|}" width="100"/>
+               </td>
+            </tr>
+            
+            <tr> <td>
+		           <a th:href="@{|/buyProduct?code=${productForm.code}|}">Mua</a>
+               </td></tr>
+         </table>
+      </div>
+      
+      
+      
+		</div>
+      <br/>
+      <th:block th:include="/_footer"></th:block>
+       
+   </body>
+</html>

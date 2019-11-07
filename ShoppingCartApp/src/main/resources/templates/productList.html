@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+   <head>
+      <meta charset="UTF-8">
+      <title>Product List</title>
+      <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   </head>
+   <body>
+      <th:block th:include="/_header"></th:block>
+      <th:block th:include="/_menu"></th:block>
+       	<div class="sidebar">
+       		  <a class="active" th:href="@{/productList}">Tất cả</a>
+			  <a th:href="@{/select?type=1}">Trà sữa</a>
+			  <a th:href="@{/select?type=2}">Nước hoa quả</a>
+			  <a th:href="@{/select?type=3}">Cà phê</a>
+			  <a th:href="@{/select?type=4}">Chè</a>
+		</div>
+		<div class="content">
+			<div class="topnav">
+  			<div class="search-container">
+    		<form action="#" th:action="@{/search}" method="get">
+      			<input type="text" placeholder="Search.." name="keyword" th:value="${keyword}">
+      			<button type="submit"><i class="fa fa-search"></i></button>
+    		</form>
+  			</div>
+		</div>
+			 <div class="product-preview-container" th:each="prodInfo : ${paginationProducts.list}">
+		         <ul>
+		            <li><img class="product-image"
+		               th:src="@{|/productImage?code=${prodInfo.code}|}" /></li>
+		            <li>Code: <span th:utext="${prodInfo.code}"></span></li>
+		            <li>Name: <span th:utext="${prodInfo.name}"></span></li>
+		            <li>Price: <span th:utext="${#numbers.formatDecimal(prodInfo.price,3,2,'COMMA')}"></span></li>
+		            <th:block sec:authorize="!hasAuthority('ROLE_MANAGER')">
+		            <li>
+		               <a th:href="@{|/buyProduct?code=${prodInfo.code}|}">Mua</a>
+		            </li>
+		            <li>
+		               <a th:href="@{|/productInfo?code=${prodInfo.code}|}">Xem chi tiết</a>
+		            </li>
+		            </th:block>
+		            <th:block sec:authorize="hasAuthority('ROLE_MANAGER')">
+		               <li>
+		                 <a style="color:red;"
+		                    th:href="@{|/admin/product?code=${prodInfo.code}|}">Sửa thông tin sản phẩm</a>
+		               </li>
+		            </th:block>
+		         </ul>
+	      	</div>
+		</div>
+	
+      
+      <br/>
+      <div class="page-navigator" th:if="${paginationProducts.totalPages > 1}">
+         <th:block th:each="page : ${paginationProducts.navigationPages}">
+         
+            <a th:href="@{|/productList?page=${page}|}" th:if="${page != -1}"
+               class="nav-item" th:utext="${page}"></a>
+               
+            <span class="nav-item" th:if="${page == -1}"> ... </span>
+             
+         </th:block>
+      </div>
+      <th:block th:include="/_footer"></th:block>
+       
+   </body>
+</html>
