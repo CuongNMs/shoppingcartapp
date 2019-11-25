@@ -44,12 +44,14 @@ public class Order implements Serializable {
  
     @Column(name = "Customer_Phone", length = 128, nullable = false)
     private String customerPhone;
- 
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_NAME", nullable = true, //
             foreignKey = @ForeignKey(name = "USER_NAME_FK"))
     private Account account;
     
+    @Column(name = "Status", length = 1, nullable = false)
+    private int status;
     
     public String getId() {
         return id;
@@ -121,6 +123,14 @@ public class Order implements Serializable {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	

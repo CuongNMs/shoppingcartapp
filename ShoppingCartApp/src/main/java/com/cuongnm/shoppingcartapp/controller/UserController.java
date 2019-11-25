@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +27,9 @@ import com.cuongnm.shoppingcartapp.dao.AccountDAO;
 import com.cuongnm.shoppingcartapp.dao.OrderDAO;
 import com.cuongnm.shoppingcartapp.dao.ProductDAO;
 import com.cuongnm.shoppingcartapp.entity.Account;
+import com.cuongnm.shoppingcartapp.entity.Order;
 import com.cuongnm.shoppingcartapp.entity.Product;
+import com.cuongnm.shoppingcartapp.form.AccountForm;
 import com.cuongnm.shoppingcartapp.form.CustomerForm;
 import com.cuongnm.shoppingcartapp.form.ProductForm;
 import com.cuongnm.shoppingcartapp.model.CartInfo;
@@ -36,6 +39,7 @@ import com.cuongnm.shoppingcartapp.model.OrderInfo;
 import com.cuongnm.shoppingcartapp.model.ProductInfo;
 import com.cuongnm.shoppingcartapp.pagination.PaginationResult;
 import com.cuongnm.shoppingcartapp.utils.Utils;
+import com.cuongnm.shoppingcartapp.validator.AccountFormValidator;
 import com.cuongnm.shoppingcartapp.validator.CustomerFormValidator;
 
 @Controller
@@ -56,6 +60,9 @@ public class UserController {
 	@Autowired
 	private CustomerFormValidator customerFormValidator;
 
+	@Autowired
+	private AccountFormValidator accountFormValidator;
+
 	@InitBinder
 	public void myInitBinder(WebDataBinder dataBinder) {
 		Object target = dataBinder.getTarget();
@@ -74,6 +81,8 @@ public class UserController {
 		// (@ModelAttribute @Validated CustomerInfo customerForm)
 		else if (target.getClass() == CustomerForm.class) {
 			dataBinder.setValidator(customerFormValidator);
+		} else if (target.getClass() == AccountForm.class) {
+			dataBinder.setValidator(accountFormValidator);
 		}
 
 	}
@@ -83,7 +92,7 @@ public class UserController {
 		return "/403";
 	}
 
-// GET: Show Login Page
+	// GET: Show Login Page
 	@RequestMapping(value = { "/login" }, method = RequestMethod.GET)
 	public String login(Model model) {
 		return "login";
@@ -375,6 +384,68 @@ public class UserController {
 			response.getOutputStream().write(product.getImage());
 		}
 		response.getOutputStream().close();
+	}
+
+	// GET: Show product.
+	@RequestMapping(value = { "/register" }, method = RequestMethod.GET)
+	public String account(Model model, @RequestParam(value = "name", defaultValue = "") String name) {
+		AccountForm accountForm = null;
+
+		if (name != null && name.length() > 0) {
+			Account account = accountDAO.findAccount(name);
+			if (account != null) {
+				accountForm = new AccountForm(account);
+			}
+		}
+		if (accountForm == null) {
+			accountForm = new AccountForm();
+		}
+		model.addAttribute("accountForm", accountForm);
+		return "register";
+	}
+
+	// POST: Save account
+	@RequestMapping(value = { "/register" }, method = RequestMethod.POST)
+	public String accountSave(Model model, //
+			@ModelAttribute("accountForm") @Validated AccountForm accountForm, //
+			BindingResult result, //
+			final RedirectAttributes redirectAttributes) {
+
+		if (result.hasErrors()) {
+			return "register";
+		}
+		try {
+			accountDAO.save(accountForm);
+		} catch (Exception e) {
+			Throwable rootCause = ExceptionUtils.getRootCause(e);
+			String message = rootCause.getMessage();
+			model.addAttribute("errorMessage", message);
+			return "register";
+		}
+		return "redirect:/productList";
+	}
+
+	@RequestMapping(value = { "/orderList/setStatus" }, method = RequestMethod.GET)
+	public String setStatusOrder(Model model, @RequestParam(value = "orderId") String orderId,
+			@RequestParam(value = "setValue") String setValue,
+			@RequestParam(value = "page", defaultValue = "1") String pageStr) {
+
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String userName = userDetails.getUsername().toString();
+		Order order = orderDAO.findOrder(orderId);
+		int page = 1;
+		try {
+			page = Integer.parseInt(pageStr);
+		} catch (Exception e) {
+		}
+		final int MAX_RESULT = 5;
+		final int MAX_NAVIGATION_PAGE = 10;
+
+		PaginationResult<OrderInfo> paginationResult //
+				= orderDAO.setStatusOrder(order, page, MAX_RESULT, MAX_NAVIGATION_PAGE, Integer.parseInt(setValue),
+						userName);
+		model.addAttribute("paginationResult", paginationResult);
+		return "orderList";
 	}
 
 }

@@ -1,14 +1,18 @@
 package com.cuongnm.shoppingcartapp.dao;
 
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cuongnm.shoppingcartapp.entity.Account;
+import com.cuongnm.shoppingcartapp.form.AccountForm;
 import com.cuongnm.shoppingcartapp.model.AccountInfo;
 import com.cuongnm.shoppingcartapp.pagination.PaginationResult;
 
@@ -18,7 +22,10 @@ public class AccountDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	public Account findAccount(String userName) {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.find(Account.class, userName);
@@ -36,6 +43,7 @@ public class AccountDAO {
 
 		return new PaginationResult<AccountInfo>(query, page, maxResult, maxNavigationPage);
 	}
+	
 	@Transactional(rollbackFor = Exception.class)
 	public PaginationResult<AccountInfo> setActiveAccount(Account account, int page, int maxResult,
 			int maxNavigationPage, int value) {
@@ -45,6 +53,37 @@ public class AccountDAO {
 		session.persist(tmpAccount);
 		session.flush();
 		return listAccountInfo(page, maxResult, maxNavigationPage);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+	public void save(AccountForm accountForm) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String userName = accountForm.getUserName();
+
+		Account account = null;
+
+		boolean isNew = false;
+		if (userName != null) {
+			account = this.findAccount(userName);
+		}
+		if (account == null) {
+			isNew = true;
+			account = new Account();
+			account.setUserRole("ROLE_USER");
+			account.setActive(1);
+		}
+		account.setUserName(userName);
+		account.setEncrytedPassword(passwordEncoder.encode(accountForm.getPassword()));
+		account.setFullName(accountForm.getFullName());
+		account.setEmail(accountForm.getEmail());
+		account.setAddress(accountForm.getAddress());
+		
+		if (isNew) {
+			session.persist(account);
+		}
+		// If error in DB, Exceptions will be thrown out immediately
+		session.flush();
 	}
 
 }

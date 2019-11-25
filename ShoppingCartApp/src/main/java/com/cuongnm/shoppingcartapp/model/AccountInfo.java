@@ -1,41 +1,25 @@
 package com.cuongnm.shoppingcartapp.model;
 
-
 public class AccountInfo {
 	private String userName;
-    private String userRole;
-    private int active;
-    private String fullName;
-    private String email;
-    private String address;
-    
-    public AccountInfo() {
- 
-    }
- 
-    public AccountInfo(String userName, String userRole, int active, String fullName, String email, String address) {
-        this.userName = userName;
-        this.userRole = userRole;
-        this.active = active;
-        this.fullName = fullName;
-        this.email = email;
-        this.address = address;
-    }
+	private String password;
+	private String userRole;
+	private int active;
+	private String fullName;
+	private String email;
+	private String address;
 
-	public String getUserName() {
-		return userName;
+	public AccountInfo() {
+
 	}
 
-	public void setUserName(String userName) {
+	public AccountInfo(String userName, String userRole, int active, String fullName, String email, String address) {
 		this.userName = userName;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
+		this.userRole = userRole;
+		this.active = active;
 		this.fullName = fullName;
+		this.email = email;
+		this.address = address;
 	}
 
 	public String getEmail() {
@@ -69,6 +53,29 @@ public class AccountInfo {
 	public void setActive(int active) {
 		this.active = active;
 	}
- 
-    
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
 }

@@ -64,6 +64,7 @@ public class OrderDAO {
 		order.setCustomerEmail(customerInfo.getEmail());
 		order.setCustomerPhone(customerInfo.getPhone());
 		order.setCustomerAddress(customerInfo.getAddress());
+		order.setStatus(1);
 		Account account = null;
 		if (userName != null) {
 			account = accountDAO.findAccount(userName);
@@ -104,14 +105,14 @@ public class OrderDAO {
 		if (userName != null) {
 			sql = "Select new " + OrderInfo.class.getName()//
 					+ "(ord.id, ord.orderDate, ord.orderNum, ord.amount, "
-					+ " ord.customerName, ord.customerAddress, ord.customerEmail, ord.customerPhone, ord.account.userName, ord.account.fullName, ord.account.email,ord.account.address) "
+					+ " ord.customerName, ord.customerAddress, ord.customerEmail, ord.customerPhone,  ord.account.userName, ord.account.fullName, ord.account.email,ord.account.address, ord.status) "
 					+ " from " + Order.class.getName() + " ord " + " where ord.account.userName = :userName ";
 			query = session.createQuery(sql, OrderInfo.class);
 			query.setParameter("userName", userName);
 		} else {
 			sql = "Select new " + OrderInfo.class.getName()//
 					+ "(ord.id, ord.orderDate, ord.orderNum, ord.amount, "
-					+ " ord.customerName, ord.customerAddress, ord.customerEmail, ord.customerPhone, ord.account.userName) "
+					+ " ord.customerName, ord.customerAddress, ord.customerEmail, ord.customerPhone, ord.account.userName, ord.status) "
 					+ " from " + Order.class.getName() + " ord "
 					+ " order by ord.orderNum desc";
 			query = session.createQuery(sql, OrderInfo.class);
@@ -133,11 +134,11 @@ public class OrderDAO {
 		return new OrderInfo(order.getId(), order.getOrderDate(), //
 				order.getOrderNum(), order.getAmount(), order.getCustomerName(), //
 				order.getCustomerAddress(), order.getCustomerEmail(), order.getCustomerPhone(),
-				order.getAccount().getUserName(), order.getAccount().getFullName(), order.getAccount().getEmail(), order.getAccount().getAddress());
+				order.getAccount().getUserName(), order.getAccount().getFullName(), order.getAccount().getEmail(), order.getAccount().getAddress(), order.getStatus());
 		}else {
 			return new OrderInfo(order.getId(), order.getOrderDate(), //
 					order.getOrderNum(), order.getAmount(), order.getCustomerName(), //
-					order.getCustomerAddress(), order.getCustomerEmail(), order.getCustomerPhone(), null);
+					order.getCustomerAddress(), order.getCustomerEmail(), order.getCustomerPhone(), null, order.getStatus());
 		}
 	}
 
@@ -152,6 +153,17 @@ public class OrderDAO {
 		query.setParameter("orderId", orderId);
 
 		return query.getResultList();
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	public PaginationResult<OrderInfo> setStatusOrder(Order order, int page, int maxResult,
+			int maxNavigationPage, int value, String userName) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Order tmpOrder = this.findOrder(order.getId());
+		tmpOrder.setStatus(value);
+		session.persist(tmpOrder);
+		session.flush();
+		return listOrderInfo(page, maxResult, maxNavigationPage, userName);
 	}
 
 }

@@ -14,12 +14,12 @@ public class OrderInfo {
 	private String customerAddress;
 	private String customerEmail;
 	private String customerPhone;
-
 	private String userName;
 	private String fullName;
 	private String email;
-
 	private String address;
+	private int status;
+
 	private List<OrderDetailInfo> details;
 
 	public OrderInfo() {
@@ -29,8 +29,8 @@ public class OrderInfo {
 	// Using for Hibernate Query.
 	public OrderInfo(String id, Date orderDate, int orderNum, //
 			double amount, String customerName, String customerAddress, //
-			String customerEmail, String customerPhone, String userName, String fullName, String email,
-			String address) {
+			String customerEmail, String customerPhone, String userName, String fullName, String email, String address,
+			int status) {
 		this.id = id;
 		this.orderDate = orderDate;
 		this.orderNum = orderNum;
@@ -45,12 +45,12 @@ public class OrderInfo {
 		this.fullName = fullName;
 		this.email = email;
 		this.address = address;
-
+		this.status = status;
 	}
 
 	public OrderInfo(String id, Date orderDate, int orderNum, //
 			double amount, String customerName, String customerAddress, //
-			String customerEmail, String customerPhone, String userName) {
+			String customerEmail, String customerPhone, String userName, int status) {
 		this.id = id;
 		this.orderDate = orderDate;
 		this.orderNum = orderNum;
@@ -60,7 +60,8 @@ public class OrderInfo {
 		this.customerAddress = customerAddress;
 		this.customerEmail = customerEmail;
 		this.customerPhone = customerPhone;
-		this.userName= userName;
+		this.userName = userName;
+		this.status = status;
 	}
 
 	public String getUserName() {
@@ -173,6 +174,14 @@ public class OrderInfo {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }
