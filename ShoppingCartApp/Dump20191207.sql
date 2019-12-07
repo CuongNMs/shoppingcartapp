@@ -42,7 +42,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES ('admin',1,'$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu','ROLE_MANAGER','admin','admin@gmail.com','Ha Noi'),('usertest1',1,'$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu','ROLE_USER','CuongNM','cuong@gmail.com','Ha Noi'),('usertest2',1,'$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu','ROLE_USER','CuongNM1','test@gmail.com','TP HCM');
+INSERT INTO `accounts` VALUES ('admin',1,'$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu','ROLE_MANAGER','admin','admin@gmail.com','Ha Noi'),('cuongnm',1,'$2a$10$eA4KwpLIu2Ssq4HKfwCwy.YbgsTo.Uzh43n4lYP0CGsTo.2sk43Ri','ROLE_USER','Nguyen Minh Cuong','cuong@gmail.com','VN'),('usertest1',1,'$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu','ROLE_USER','CuongNM','cuong@gmail.com','Ha Noi'),('usertest2',1,'$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu','ROLE_USER','CuongNM1','test@gmail.com','TP HCM');
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,7 +74,7 @@ CREATE TABLE `order_details` (
 
 LOCK TABLES `order_details` WRITE;
 /*!40000 ALTER TABLE `order_details` DISABLE KEYS */;
-INSERT INTO `order_details` VALUES ('0887096d-0494-4331-94a4-dd03f0f2012a',10000,10000,1,'685f26fc-b7d1-4eff-adbc-3b5befa3460d','4'),('2f361c0e-303b-44fc-8252-607d85a2f130',40000,40000,1,'0f949783-47ad-471a-8851-de9df043da2c','2'),('a3669a2f-44c9-42f1-93c4-933a2ce5396c',35000,35000,1,'0f949783-47ad-471a-8851-de9df043da2c','3');
+INSERT INTO `order_details` VALUES ('0887096d-0494-4331-94a4-dd03f0f2012a',10000,10000,1,'685f26fc-b7d1-4eff-adbc-3b5befa3460d','4'),('0eae03b3-81b6-4c96-a394-dccc1faaec67',35000,35000,1,'6af4176d-db5e-4c26-aef4-8f3886dff616','3'),('251c7186-bef5-4317-bc93-de080c98962d',40000,40000,1,'49871eec-ef75-4f77-a73f-9f281d5933cd','2'),('2f361c0e-303b-44fc-8252-607d85a2f130',40000,40000,1,'0f949783-47ad-471a-8851-de9df043da2c','2'),('728bc985-e1f7-417a-95ed-53c68808ee90',80000,40000,2,'2a11b9ba-5a7c-4c10-8880-cbfbdb6a1180','2'),('a3669a2f-44c9-42f1-93c4-933a2ce5396c',35000,35000,1,'0f949783-47ad-471a-8851-de9df043da2c','3');
 /*!40000 ALTER TABLE `order_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,6 +95,7 @@ CREATE TABLE `orders` (
   `ORDER_DATE` datetime NOT NULL,
   `ORDER_NUM` int(11) NOT NULL,
   `USER_NAME` varchar(20) DEFAULT NULL,
+  `STATUS` int(2) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ORDER_UK` (`ORDER_NUM`),
   KEY `USER_NAME_FK` (`USER_NAME`),
@@ -108,7 +109,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES ('0f949783-47ad-471a-8851-de9df043da2c',75000,'Ha Noi','user1@mail.com','user1','0123435656','2019-11-07 21:01:19',2,'usertest1'),('685f26fc-b7d1-4eff-adbc-3b5befa3460d',10000,'Ha Noi','guest@mail.com','GuestUser','0123456789','2019-11-07 20:59:32',1,NULL);
+INSERT INTO `orders` VALUES ('0f949783-47ad-471a-8851-de9df043da2c',75000,'Ha Noi','user1@mail.com','user1','0123435656','2019-11-07 21:01:19',2,'usertest1',0),('2a11b9ba-5a7c-4c10-8880-cbfbdb6a1180',80000,'dvdfvfdvdfvdf','testguest2@gmail.com','GUEST2','123123213','2019-11-25 21:10:53',5,NULL,1),('49871eec-ef75-4f77-a73f-9f281d5933cd',40000,'106 Hoàng Quốc Việt, Hoa Binh Tower','nguyen.minh.cuong.1102@gmail.com','Cường Minh','0335465063','2019-11-24 21:00:59',3,'cuongnm',1),('685f26fc-b7d1-4eff-adbc-3b5befa3460d',10000,'Ha Noi','guest@mail.com','GuestUser','0123456789','2019-11-07 20:59:32',1,NULL,1),('6af4176d-db5e-4c26-aef4-8f3886dff616',35000,'213123','guest@mail.com','GUEST','12312312321','2019-11-25 21:06:18',4,NULL,0);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-07 21:54:13
+-- Dump completed on 2019-12-07 11:43:40
